@@ -1,3 +1,4 @@
+import signal
 from snake import Game, Direction
 from unittest.mock import Mock, call, DEFAULT
 
@@ -42,7 +43,22 @@ class TestSnake():
             call([(7, 3), (7, 4), (7, 5)])
         ]
 
-    def test_cannot_go_back(self):
+    def test_infinite_iterations(self):
+        try:
+            with Timeout(seconds=2):
+                Game(iterations=None, **self.default_params).run()
+        except TimeoutError:
+            pass
+        else:
+            raise AssertionError('Expected the thing to timeout!')
+
+
+class TestCannotGoBack:
+    def setup_method(self):
+        self.ui = Mock()
+        self.ui.direction = mock_direction()
+
+    def test_left(self):
         snake = [(1, 0), (0, 0)]
         self.ui.direction = mock_direction([Direction.RIGHT, Direction.LEFT])
         game = Game(iterations=3, snake=snake, size=4, ui=self.ui)
@@ -51,6 +67,40 @@ class TestSnake():
             call([(1, 0), (0, 0)]),
             call([(2, 0), (1, 0)]),
             call([(3, 0), (2, 0)])
+        ]
+
+    def test_right(self):
+        snake = [(2, 0), (3, 0)]
+        self.ui.direction = mock_direction([Direction.LEFT, Direction.RIGHT])
+        game = Game(iterations=3, snake=snake, size=4,
+                    ui=self.ui, initial_direction=Direction.LEFT)
+        game.run()
+        assert self.ui.draw_snake.call_args_list == [
+            call([(2, 0), (3, 0)]),
+            call([(1, 0), (2, 0)]),
+            call([(0, 0), (1, 0)])
+        ]
+
+    def test_down(self):
+        snake = [(0, 2), (0, 3)]
+        self.ui.direction = mock_direction([Direction.UP, Direction.DOWN])
+        game = Game(iterations=3, snake=snake, size=4, ui=self.ui)
+        game.run()
+        assert self.ui.draw_snake.call_args_list == [
+            call([(0, 2), (0, 3)]),
+            call([(0, 1), (0, 2)]),
+            call([(0, 0), (0, 1)])
+        ]
+
+    def test_up(self):
+        snake = [(0, 1), (0, 0)]
+        self.ui.direction = mock_direction([Direction.DOWN, Direction.UP])
+        game = Game(iterations=3, snake=snake, size=4, ui=self.ui)
+        game.run()
+        assert self.ui.draw_snake.call_args_list == [
+            call([(0, 1), (0, 0)]),
+            call([(0, 2), (0, 1)]),
+            call([(0, 3), (0, 2)])
         ]
 
 
@@ -111,3 +161,19 @@ def mock_direction(directions=None):
         side_effect=effect,
         return_value=None
     )
+
+
+class Timeout:
+    def __init__(self, seconds=1, error_message='Timeout'):
+        self.seconds = seconds
+        self.error_message = error_message
+
+    def handle_timeout(self, signum, frame):
+        raise TimeoutError(self.error_message)
+
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+
+    def __exit__(self, type, value, traceback):
+        signal.alarm(0)

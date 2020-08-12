@@ -31,9 +31,15 @@ class Game:
         self._direction = initial_direction
 
     def run(self):
-        for _ in range(self.iterations, 0, -1):
+        while True:
             self._ui.draw_snake([position for position in self._snake])
             self._move_snake(self._ui.direction())
+
+            if self.iterations:
+                self.iterations -= 1
+
+            if self.iterations == 0:
+                break
 
     def _move_snake(self, direction=None):
         head = self._snake[0]
