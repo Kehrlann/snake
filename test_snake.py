@@ -46,14 +46,35 @@ class TestLoopOver:
     def setup_method(self):
         self.ui = Mock()
         self.ui.direction = Mock(return_value=None)
-        self.default_params = {"size": 4, "ui": self.ui}
+        self.default_params = {"iterations": 2, "size": 4, "ui": self.ui}
 
-    def test_snake_loops_over(self):
-        snake = [(1, 0), (0, 0)]
+    def test_right(self):
+        snake = [(3, 0), (0, 0)]
         self.ui.direction = mock_direction(Direction.RIGHT)
-        game = Game(iterations=5, snake=snake, **self.default_params)
+        game = Game(snake=snake, **self.default_params)
         game.run()
         self.ui.draw_snake.assert_any_call([(0, 0), (3, 0)])
+
+    def test_left(self):
+        snake = [(0, 0), (1, 0)]
+        self.ui.direction = mock_direction(Direction.LEFT)
+        game = Game(snake=snake, **self.default_params)
+        game.run()
+        self.ui.draw_snake.assert_any_call([(3, 0), (0, 0)])
+
+    def test_up(self):
+        snake = [(0, 0), (0, 1)]
+        self.ui.direction = mock_direction(Direction.UP)
+        game = Game(snake=snake, **self.default_params)
+        game.run()
+        self.ui.draw_snake.assert_any_call([(0, 3), (0, 0)])
+
+    def test_down(self):
+        snake = [(0, 3), (0, 0)]
+        self.ui.direction = mock_direction(Direction.DOWN)
+        game = Game(snake=snake, **self.default_params)
+        game.run()
+        self.ui.draw_snake.assert_any_call([(0, 0), (0, 3)])
 
 
 def mock_direction(directions=None):
