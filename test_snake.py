@@ -45,7 +45,7 @@ class TestSnake():
 
     def test_infinite_iterations(self):
         try:
-            with Timeout(seconds=2):
+            with Timeout(seconds=1):
                 Game(iterations=None, **self.default_params).run()
         except TimeoutError:
             pass
