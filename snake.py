@@ -1,8 +1,8 @@
 class Direction:
-    UP = 1
-    DOWN = 2
-    LEFT = 3
-    RIGHT = 4
+    UP = (0, -1)
+    DOWN = (0, 1)
+    LEFT = (-1, 0)
+    RIGHT = (1, 0)
 
 
 class Game:
@@ -32,11 +32,6 @@ class Game:
         if direction is not None:
             self._direction = direction
 
-        if self._direction == Direction.UP:
-            self._snake.insert(0, (head[0], (head[1] - 1) % self._size))
-        elif self._direction == Direction.DOWN:
-            self._snake.insert(0, (head[0], (head[1] + 1) % self._size))
-        elif self._direction == Direction.RIGHT:
-            self._snake.insert(0, ((head[0] + 1) % self._size, head[1]))
-        elif self._direction == Direction.LEFT:
-            self._snake.insert(0, ((head[0] - 1) % self._size, head[1]))
+        new_head = ((head[0] + self._direction[0]) % self._size,
+                    (head[1] + self._direction[1]) % self._size)
+        self._snake.insert(0, new_head)
