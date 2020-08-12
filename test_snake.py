@@ -52,6 +52,13 @@ class TestSnake():
         else:
             raise AssertionError('Expected the thing to timeout!')
 
+    def test_snake_eats_itself(self):
+        self.ui.direction = mock_direction(Direction.UP)
+        game = Game(size=20, ui=self.ui, snake=[
+                    (0, 1), (0, 0), (1, 0), (1, 1), (1, 2)])
+        with Timeout(seconds=1):
+            assert game.run() is False
+
 
 class TestCannotGoBack:
     def setup_method(self):

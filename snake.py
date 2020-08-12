@@ -29,17 +29,24 @@ class Game:
         self.iterations = iterations
         self._ui = ui
         self._direction = initial_direction
+        self._lost = False
 
     def run(self):
-        while True:
+        while not self._lost:
             self._ui.draw_snake([position for position in self._snake])
-            self._move_snake(self._ui.direction())
+
+            try:
+                self._move_snake(self._ui.direction())
+            except Game.GameOverError:
+                self._lost = True
 
             if self.iterations:
                 self.iterations -= 1
 
             if self.iterations == 0:
                 break
+
+        return not self._lost
 
     def _move_snake(self, direction=None):
         head = self._snake[0]
@@ -49,4 +56,11 @@ class Game:
 
         new_head = ((head[0] + self._direction[0]) % self._size,
                     (head[1] + self._direction[1]) % self._size)
+
+        if new_head in self._snake:
+            raise Game.GameOverError()
+
         self._snake.insert(0, new_head)
+
+    class GameOverError(Exception):
+        pass
