@@ -1,15 +1,5 @@
 from snake import Game, Direction
-from unittest.mock import Mock, call
-
-
-# class TestSnake:
-#   def setup_method(self):
-#     self._ui = Mock()
-#     self._ui.direction = Mock(return_value=None)
-
-#   def test_hi(self):
-#     print("hello")
-#     assert self.game is not None
+from unittest.mock import Mock, call, DEFAULT
 
 
 class TestSnake():
@@ -17,7 +7,7 @@ class TestSnake():
 
     def setup_method(self):
         self.ui = Mock()
-        self.ui.direction = Mock(return_value=None)
+        self.ui.direction = mock_direction()
 
     def test_snake_moves_right(self):
         game = Game(iterations=2, ui=self.ui, **self.DEFAULT_PARAMS)
@@ -28,8 +18,9 @@ class TestSnake():
         ]
 
     def test_snake_changes_direction(self):
-        self.ui.direction = Mock(
-            side_effect=[Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT, None])
+        self.ui.direction = mock_direction(
+            [Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT]
+        )
         game = Game(iterations=5, ui=self.ui, **self.DEFAULT_PARAMS)
         game.run()
         assert self.ui.draw_snake.call_args_list == [
@@ -41,7 +32,7 @@ class TestSnake():
         ]
 
     def test_snake_keeps_direction(self):
-        self.ui.direction = Mock(side_effect=[Direction.UP, None, None])
+        self.ui.direction = mock_direction(Direction.UP)
         game = Game(iterations=3, ui=self.ui, **self.DEFAULT_PARAMS)
         game.run()
         assert self.ui.draw_snake.call_args_list == [
@@ -52,9 +43,37 @@ class TestSnake():
 
 
 class TestLoopOver:
+    def setup_method(self):
+        self.ui = Mock()
+        self.ui.direction = Mock(return_value=None)
+        self.default_params = {"size": 4, "ui": self.ui}
+
     def test_snake_loops_over(self):
-        ui = Mock()
-        ui.direction = Mock(return_value=None)
-        game = Game(iterations=14, ui=ui)
+        snake = [(1, 0), (0, 0)]
+        self.ui.direction = mock_direction(Direction.RIGHT)
+        game = Game(iterations=5, snake=snake, **self.default_params)
         game.run()
-        ui.draw_snake.assert_any_call([(0, 5), (19, 5), (18, 5)])
+        self.ui.draw_snake.assert_any_call([(0, 0), (3, 0)])
+
+
+def mock_direction(directions=None):
+    if directions is None:
+        return Mock(return_value=None)
+    elif not isinstance(directions, list):
+        directions = [directions]
+
+    def func():
+        for direction in directions:
+            yield direction
+        while True:
+            yield DEFAULT
+
+    generator = func()
+
+    def effect(*args, **kwargs):
+        return next(generator)
+
+    return Mock(
+        side_effect=effect,
+        return_value=None
+    )
