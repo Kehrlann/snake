@@ -19,7 +19,7 @@ class Game:
     def __init__(self,
                  *args,
                  ui=None,
-                 iterations=20,
+                 iterations=None,
                  size=20,
                  snake=DEFAULT_SNAKE,
                  initial_direction=Direction.RIGHT
