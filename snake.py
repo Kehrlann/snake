@@ -4,6 +4,14 @@ class Direction:
     LEFT = (-1, 0)
     RIGHT = (1, 0)
 
+    @staticmethod
+    def should_update(old_direction, new_direction):
+        return new_direction is not None \
+            and not (new_direction == Direction.UP and old_direction == Direction.DOWN) \
+            and not (new_direction == Direction.DOWN and old_direction == Direction.UP) \
+            and not (new_direction == Direction.RIGHT and old_direction == Direction.LEFT) \
+            and not (new_direction == Direction.LEFT and old_direction == Direction.RIGHT)
+
 
 class Game:
     DEFAULT_SNAKE = [(7, 5), (6, 5), (5, 5)]
@@ -13,13 +21,14 @@ class Game:
                  ui=None,
                  iterations=20,
                  size=20,
-                 snake=DEFAULT_SNAKE
+                 snake=DEFAULT_SNAKE,
+                 initial_direction=Direction.RIGHT
                  ):
         self._size = size
         self._snake = [x for x in snake]
         self.iterations = iterations
         self._ui = ui
-        self._direction = Direction.RIGHT
+        self._direction = initial_direction
 
     def run(self):
         for _ in range(self.iterations, 0, -1):
@@ -29,7 +38,7 @@ class Game:
     def _move_snake(self, direction=None):
         head = self._snake[0]
         self._snake.pop()
-        if direction is not None:
+        if Direction.should_update(self._direction, direction):
             self._direction = direction
 
         new_head = ((head[0] + self._direction[0]) % self._size,
