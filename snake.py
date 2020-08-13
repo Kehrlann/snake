@@ -58,7 +58,7 @@ class Game:
             try:
                 direction = self._ui.direction()
                 egg_eaten = self._egg_eaten(direction)
-                self._move_snake_and_eat_egg(direction, egg_eaten)
+                self._move_snake(direction, egg_eaten)
                 if len(self._snake) == self._size * self._size:
                     self._lost = False
                     break
@@ -76,7 +76,7 @@ class Game:
 
         return not self._lost
 
-    def _move_snake_and_eat_egg(self, direction, egg_eaten):
+    def _move_snake(self, direction, egg_eaten):
         new_head = self._compute_new_head(direction)
 
         if not egg_eaten:
