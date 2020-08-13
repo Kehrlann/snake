@@ -33,7 +33,7 @@ class Game:
 
     def run(self):
         while not self._lost:
-            self._ui.draw_snake([position for position in self._snake])
+            self._ui.draw([position for position in self._snake])
 
             try:
                 self._move_snake(self._ui.direction())
