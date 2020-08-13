@@ -26,7 +26,7 @@ class Game:
                  ):
         self._size = size
         self._snake = [x for x in snake]
-        self.iterations = iterations
+        self._iterations = iterations
         self._ui = ui
         self._direction = initial_direction
         self._lost = False
@@ -40,10 +40,10 @@ class Game:
             except Game.GameOverError:
                 self._lost = True
 
-            if self.iterations:
-                self.iterations -= 1
+            if self._iterations:
+                self._iterations -= 1
 
-            if self.iterations == 0:
+            if self._iterations == 0:
                 break
 
         return not self._lost
