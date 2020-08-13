@@ -210,7 +210,11 @@ class TestLoopOver(BaseTestCase):
     def setup_method(self):
         self.ui = Mock()
         self.ui.direction = Mock(return_value=None)
-        self.default_params = {"iterations": 2, "size": 4, "ui": self.ui}
+        self.egg_creator = Mock()
+        # no snake will eat this egg
+        self.egg_creator.create.return_value = [3, 3]
+        self.default_params = {"iterations": 2, "size": 4,
+                               "ui": self.ui, "egg_creator": self.egg_creator}
 
     def test_right(self):
         snake = [(3, 0), (0, 0)]
