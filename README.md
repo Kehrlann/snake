@@ -14,6 +14,7 @@ Snake game &amp; TDD
 - Very nice UI abstraction without knowing too much how the underlying graphical library works
   - Plugged in pygame, almost nothing to change and it Just Worked™
 - IoC was nice: the Game knows about an abstraction of the UI; and therefore the game loop is implemented in the Game itself, without any UI stuff
+- mypy typings seemed painful...
 
 **Possible TODOs:**
 
@@ -21,3 +22,4 @@ Snake game &amp; TDD
 - [ ] Try swapping in a TermUI interface
 - [ ] Apply "nullable infrastructure" patterns and test without mocks (not sure it makes a lot of sense here, we'll see)
 - [ ] Refactor: make the game not square
+- [ ] retry my hand at typings
