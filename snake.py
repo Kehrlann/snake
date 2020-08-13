@@ -52,7 +52,8 @@ class Game:
         while not self._lost:
             self._ui.draw(
                 snake=[position for position in self._snake],
-                egg=self._egg
+                egg=self._egg,
+                size=self._size
             )
 
             try:
