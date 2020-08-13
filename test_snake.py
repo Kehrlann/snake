@@ -142,11 +142,21 @@ class TestCannotGoBack(BaseTestCase):
     def setup_method(self):
         self.ui = Mock()
         self.ui.direction = mock_direction()
+        self.egg_creator = Mock()
+        # no snake will eat this egg
+        self.egg_creator.create.return_value = [
+            3, 3]
+        self.default_params = {
+            "ui": self.ui,
+            "egg_creator": self.egg_creator,
+            "iterations": 3,
+            "size": 4
+        }
 
     def test_left(self):
         snake = [(1, 0), (0, 0)]
         self.ui.direction = mock_direction([Direction.RIGHT, Direction.LEFT])
-        game = Game(iterations=3, snake=snake, size=4, ui=self.ui)
+        game = Game(snake=snake, **self.default_params)
         game.run()
         assert self.get_drawn_snakes() == [
             [(1, 0), (0, 0)],
@@ -157,8 +167,8 @@ class TestCannotGoBack(BaseTestCase):
     def test_right(self):
         snake = [(2, 0), (3, 0)]
         self.ui.direction = mock_direction([Direction.LEFT, Direction.RIGHT])
-        game = Game(iterations=3, snake=snake, size=4,
-                    ui=self.ui, initial_direction=Direction.LEFT)
+        game = Game(snake=snake, initial_direction=Direction.LEFT,
+                    **self.default_params)
         game.run()
         assert self.get_drawn_snakes() == [
             [(2, 0), (3, 0)],
@@ -169,7 +179,7 @@ class TestCannotGoBack(BaseTestCase):
     def test_down(self):
         snake = [(0, 2), (0, 3)]
         self.ui.direction = mock_direction([Direction.UP, Direction.DOWN])
-        game = Game(iterations=3, snake=snake, size=4, ui=self.ui)
+        game = Game(snake=snake, **self.default_params)
         game.run()
         assert self.get_drawn_snakes() == [
             [(0, 2), (0, 3)],
@@ -180,7 +190,7 @@ class TestCannotGoBack(BaseTestCase):
     def test_up(self):
         snake = [(0, 1), (0, 0)]
         self.ui.direction = mock_direction([Direction.DOWN, Direction.UP])
-        game = Game(iterations=3, snake=snake, size=4, ui=self.ui)
+        game = Game(snake=snake, **self.default_params)
         game.run()
         assert self.get_drawn_snakes() == [
             [(0, 1), (0, 0)],

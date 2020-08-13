@@ -32,7 +32,7 @@ class Game:
                  ui=None,
                  iterations=None,
                  size=20,
-                 egg_creator=RandomEggCreator(20),
+                 egg_creator=None,
                  snake=DEFAULT_SNAKE,
                  initial_direction=Direction.RIGHT
                  ):
@@ -77,10 +77,10 @@ class Game:
         return not self._lost
 
     def _move_snake_and_eat_egg(self, direction, egg_eaten):
+        new_head = self._compute_new_head(direction)
+
         if not egg_eaten:
             self._snake.pop()
-
-        new_head = self._compute_new_head(direction)
 
         if new_head in self._snake:
             raise Game.GameOverError()
