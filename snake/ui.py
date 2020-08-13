@@ -26,7 +26,6 @@ class Ui:
             x, y, CELL_SIZE, CELL_SIZE))
 
     def direction(self):
-        print("direction")
         for event in pygame.event.get():
             if event.type == constants.KEYDOWN:
                 if event.key == constants.K_q:
@@ -43,7 +42,6 @@ class Ui:
                     return Direction.RIGHT
 
     def draw(self, *args, snake, egg):
-        print("draw")
         self.screen.fill(BLACK)
 
         for position in snake:
