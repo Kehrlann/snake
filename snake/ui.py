@@ -1,8 +1,8 @@
 import sys
-from itertools import product
-from snake import Direction
 import random
 import pygame
+from itertools import product
+from .game import Direction
 from pygame import constants
 
 CELL_SIZE = 20
