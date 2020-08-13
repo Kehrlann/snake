@@ -3,7 +3,7 @@ from itertools import product
 from snake import Direction
 import random
 import pygame
-from pygame.locals import *
+from pygame import constants
 
 CELL_SIZE = 20
 BLACK = (0, 0, 0)
@@ -28,18 +28,18 @@ class Ui:
     def direction(self):
         print("direction")
         for event in pygame.event.get():
-            if event.type == KEYDOWN:
-                if event.key == K_q:
+            if event.type == constants.KEYDOWN:
+                if event.key == constants.K_q:
                     pygame.display.quit()
                     pygame.quit()
                     sys.exit()
-                elif event.key == K_UP:
+                elif event.key == constants.K_UP:
                     return Direction.UP
-                elif event.key == K_DOWN:
+                elif event.key == constants.K_DOWN:
                     return Direction.DOWN
-                elif event.key == K_LEFT:
+                elif event.key == constants.K_LEFT:
                     return Direction.LEFT
-                elif event.key == K_RIGHT:
+                elif event.key == constants.K_RIGHT:
                     return Direction.RIGHT
 
     def draw(self, *args, snake, egg):
