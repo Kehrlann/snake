@@ -1,7 +1,7 @@
+import pytest
 import signal
 from snake import Game, Direction, RandomEggCreator
 from unittest.mock import Mock, call, DEFAULT
-import pytest
 
 
 class BaseTestCase:
@@ -33,11 +33,6 @@ class TestGame(BaseTestCase):
         with pytest.raises(Exception):
             # don't really care how it fails ...
             game.run()
-
-    def test_draw_canvas_size(self):
-        game = Game(iterations=1, snake=[(0, 0)], ui=self.ui, size=42)
-        game.run()
-        assert self.ui.draw.call_args.kwargs["size"] == 42
 
     def test_snake_changes_direction(self):
         self.ui.direction = mock_direction(
