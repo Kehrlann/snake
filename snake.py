@@ -1,3 +1,6 @@
+from random import randint
+
+
 class Direction:
     UP = (0, -1)
     DOWN = (0, 1)
@@ -13,6 +16,14 @@ class Direction:
             and not (new_direction == Direction.LEFT and old_direction == Direction.RIGHT)
 
 
+class RandomEggCreator():
+    def __init__(self, size):
+        self._size = size
+
+    def create(self):
+        return (randint(0, self._size - 1), randint(0, self._size - 1))
+
+
 class Game:
     DEFAULT_SNAKE = [(7, 5), (6, 5), (5, 5)]
 
@@ -21,6 +32,7 @@ class Game:
                  ui=None,
                  iterations=None,
                  size=20,
+                 egg_creator=RandomEggCreator(20),
                  snake=DEFAULT_SNAKE,
                  initial_direction=Direction.RIGHT
                  ):
@@ -30,13 +42,29 @@ class Game:
         self._ui = ui
         self._direction = initial_direction
         self._lost = False
+        if egg_creator:
+            self._egg_creator = egg_creator
+        else:
+            self._egg_creator = RandomEggCreator(size)
 
     def run(self):
+        self._place_egg()
         while not self._lost:
-            self._ui.draw([position for position in self._snake])
+            self._ui.draw(
+                snake=[position for position in self._snake],
+                egg=self._egg
+            )
 
             try:
-                self._move_snake(self._ui.direction())
+                direction = self._ui.direction()
+                egg_eaten = self._egg_eaten(direction)
+                self._move_snake_and_eat_egg(direction, egg_eaten)
+                if len(self._snake) == self._size * self._size:
+                    self._lost = False
+                    break
+
+                if egg_eaten:
+                    self._place_egg()
             except Game.GameOverError:
                 self._lost = True
 
@@ -48,19 +76,37 @@ class Game:
 
         return not self._lost
 
-    def _move_snake(self, direction=None):
+    def _move_snake_and_eat_egg(self, direction, egg_eaten):
+        if not egg_eaten:
+            self._snake.pop()
+
+        new_head = self._compute_new_head(direction)
+
+        if new_head in self._snake:
+            raise Game.GameOverError()
+
+        self._snake.insert(0, new_head)
+
+    def _egg_eaten(self, direction):
+        return self._compute_new_head(direction) == self._egg
+
+    def _compute_new_head(self, direction):
         head = self._snake[0]
-        self._snake.pop()
+
         if Direction.should_update(self._direction, direction):
             self._direction = direction
 
         new_head = ((head[0] + self._direction[0]) % self._size,
                     (head[1] + self._direction[1]) % self._size)
 
-        if new_head in self._snake:
-            raise Game.GameOverError()
+        return new_head
 
-        self._snake.insert(0, new_head)
+    def _place_egg(self):
+        while True:
+            new_egg = self._egg_creator.create()
+            if not new_egg in self._snake:
+                self._egg = new_egg
+                break
 
     class GameOverError(Exception):
         pass
