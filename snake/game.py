@@ -1,14 +1,43 @@
 from dataclasses import dataclass
 from random import randint
 from typing import Sequence, Tuple
+from enum import Enum
 
 
-# TODO: enum class
-class Direction():
-    UP = (0, -1)
-    DOWN = (0, 1)
-    LEFT = (-1, 0)
-    RIGHT = (1, 0)
+class Direction(Enum):
+    UP = 1
+    DOWN = 2
+    LEFT = 3
+    RIGHT = 4
+
+    @property
+    def x(self) -> int:
+        if self is self.RIGHT:
+            return 1
+        elif self is self.LEFT:
+            return -1
+        else:
+            return 0
+
+    @property
+    def y(self) -> int:
+        if self is self.DOWN:
+            return 1
+        elif self is self.UP:
+            return -1
+        else:
+            return 0
+
+    @staticmethod
+    def from_delta(x: int, y: int):
+        if x == 0 and y == 1:
+            return Direction.DOWN
+        elif x == 0 and y == -1:
+            return Direction.UP
+        elif x == 1 and y == 0:
+            return Direction.RIGHT
+        else:
+            return Direction.LEFT
 
 
 class RandomEggCreator():
@@ -113,8 +142,7 @@ class Snake:
         elif delta_y == 1 - board.height:
             delta_y = 1
 
-        # TODO: fix typings
-        self._direction = (delta_x, delta_y)
+        self._direction = Direction.from_delta(delta_x, delta_y)
         self._board = board
 
     @property
@@ -150,8 +178,8 @@ class Snake:
 
     def _compute_new_head(self) -> Position:
         head = self._positions[0]
-        return ((head[0] + self._direction[0]) % self._board.width,
-                (head[1] + self._direction[1]) % self._board.height)
+        return ((head[0] + self._direction.x) % self._board.width,
+                (head[1] + self._direction.y) % self._board.height)
 
     def fills_board(self):
         return len(self) == self._board.size
