@@ -93,10 +93,6 @@ class TestSnake():
         snake = Snake(self.board, positions=[(0, 1), (0, 0)])
         assert [pos for pos in snake] == [(0, 1), (0, 0)]
 
-    def test_length(self):
-        snake = Snake(self.board, positions=[(0, 1), (0, 0)])
-        assert len(snake) == 2
-
 
 class TestLoopOver():
     board = Board(width=4, height=6)
