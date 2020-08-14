@@ -29,7 +29,6 @@ class TestGame(BaseTestCase):
         ]
 
     def test_snake_size_zero_fails(self):
-        game = Game(iterations=1, snake=[], ui=self.ui, size=42)
         with pytest.raises(Exception):
             # don't really care how it fails ...
             game.run()
@@ -68,7 +67,7 @@ class TestGame(BaseTestCase):
             raise AssertionError('Expected the thing to timeout!')
 
     def test_snake_eats_itself(self):
-        self.ui.direction = mock_direction(Direction.UP)
+        self.ui.direction = mock_direction(Direction.RIGHT)
         game = Game(size=20, ui=self.ui, snake=[
                     (0, 1), (0, 0), (1, 0), (1, 1), (1, 2)])
         with Timeout():
@@ -134,8 +133,8 @@ class TestEggInteraction(BaseTestCase):
     def test_eat_last_egg(self):
         egg_creator = Mock()
         egg_creator.create.return_value = (1, 1)
-        game = Game(iterations=1,
-                    egg_creator=egg_creator,
+        self.ui.direction = mock_direction(Direction.RIGHT)
+        game = Game(egg_creator=egg_creator,
                     ui=self.ui,
                     snake=[(0, 1), (0, 0), (1, 0)],
                     size=2)
@@ -174,8 +173,7 @@ class TestCannotGoBack(BaseTestCase):
     def test_right(self):
         snake = [(2, 0), (3, 0)]
         self.ui.direction = mock_direction([Direction.LEFT, Direction.RIGHT])
-        game = Game(snake=snake, initial_direction=Direction.LEFT,
-                    **self.default_params)
+        game = Game(snake=snake, **self.default_params)
         game.run()
         assert self.get_drawn_snakes() == [
             [(2, 0), (3, 0)],
@@ -217,7 +215,7 @@ class TestLoopOver(BaseTestCase):
                                "ui": self.ui, "egg_creator": self.egg_creator}
 
     def test_right(self):
-        snake = [(3, 0), (0, 0)]
+        snake = [(3, 0), (2, 0)]
         self.ui.direction = mock_direction(Direction.RIGHT)
         game = Game(snake=snake, **self.default_params)
         game.run()
@@ -226,8 +224,7 @@ class TestLoopOver(BaseTestCase):
     def test_left(self):
         snake = [(0, 0), (1, 0)]
         self.ui.direction = mock_direction(Direction.LEFT)
-        game = Game(snake=snake, initial_direction=Direction.LEFT,
-                    **self.default_params)
+        game = Game(snake=snake, **self.default_params)
         game.run()
         assert [(3, 0), (0, 0)] in self.get_drawn_snakes()
 
@@ -239,7 +236,7 @@ class TestLoopOver(BaseTestCase):
         assert [(0, 3), (0, 0)] in self.get_drawn_snakes()
 
     def test_down(self):
-        snake = [(0, 3), (0, 0)]
+        snake = [(0, 3), (0, 2)]
         self.ui.direction = mock_direction(Direction.DOWN)
         game = Game(snake=snake, **self.default_params)
         game.run()
