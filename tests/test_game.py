@@ -16,8 +16,11 @@ class TestGame(BaseTestCase):
     def setup_method(self):
         self.ui = Mock()
         self.ui.direction = mock_direction()
+        self.egg_creator = Mock()
+        self.egg_creator.create.return_value = (0, 0)
         self.default_params = {
-            "snake": [(7, 5), (6, 5), (5, 5)], "size": 20, "ui": self.ui
+            "snake": [(7, 5), (6, 5), (5, 5)], "size": 20, "ui": self.ui,
+            "egg_creator": self.egg_creator
         }
 
     def test_snake_moves_right(self):
@@ -56,6 +59,37 @@ class TestGame(BaseTestCase):
             [(7, 4), (7, 5), (6, 5)],
             [(7, 3), (7, 4), (7, 5)]
         ]
+
+    def test_cannot_go_back(self):
+        self.ui.direction = mock_direction([Direction.RIGHT, Direction.LEFT])
+        self.egg_creator.create.return_value = (3, 3)
+        game = Game(
+            snake=[(1, 0), (0, 0)],
+            iterations=3,
+            size=4,
+            ui=self.ui,
+            egg_creator=self.egg_creator
+        )
+        game.run()
+        assert self.get_drawn_snakes() == [
+            [(1, 0), (0, 0)],
+            [(2, 0), (1, 0)],
+            [(3, 0), (2, 0)]
+        ]
+
+    def test_loop_over(self):
+        snake = [(3, 0), (2, 0)]
+        self.egg_creator.create.return_value = [3, 3]
+        self.ui.direction = mock_direction(Direction.RIGHT)
+        game = Game(
+            snake=[(3, 0), (2, 0)],
+            iterations=2,
+            size=4,
+            ui=self.ui,
+            egg_creator=self.egg_creator
+        )
+        game.run()
+        assert [(0, 0), (3, 0)] in self.get_drawn_snakes()
 
     def test_infinite_iterations(self):
         try:
@@ -142,105 +176,6 @@ class TestEggInteraction(BaseTestCase):
         with Timeout():
             result = game.run()
             assert result is True
-
-
-class TestCannotGoBack(BaseTestCase):
-    def setup_method(self):
-        self.ui = Mock()
-        self.ui.direction = mock_direction()
-        self.egg_creator = Mock()
-        # no snake will eat this egg
-        self.egg_creator.create.return_value = [
-            3, 3]
-        self.default_params = {
-            "ui": self.ui,
-            "egg_creator": self.egg_creator,
-            "iterations": 3,
-            "size": 4
-        }
-
-    def test_left(self):
-        snake = [(1, 0), (0, 0)]
-        self.ui.direction = mock_direction([Direction.RIGHT, Direction.LEFT])
-        game = Game(snake=snake, **self.default_params)
-        game.run()
-        assert self.get_drawn_snakes() == [
-            [(1, 0), (0, 0)],
-            [(2, 0), (1, 0)],
-            [(3, 0), (2, 0)]
-        ]
-
-    def test_right(self):
-        snake = [(2, 0), (3, 0)]
-        self.ui.direction = mock_direction([Direction.LEFT, Direction.RIGHT])
-        game = Game(snake=snake, **self.default_params)
-        game.run()
-        assert self.get_drawn_snakes() == [
-            [(2, 0), (3, 0)],
-            [(1, 0), (2, 0)],
-            [(0, 0), (1, 0)]
-        ]
-
-    def test_down(self):
-        snake = [(0, 2), (0, 3)]
-        self.ui.direction = mock_direction([Direction.UP, Direction.DOWN])
-        game = Game(snake=snake, **self.default_params)
-        game.run()
-        assert self.get_drawn_snakes() == [
-            [(0, 2), (0, 3)],
-            [(0, 1), (0, 2)],
-            [(0, 0), (0, 1)]
-        ]
-
-    def test_up(self):
-        snake = [(0, 1), (0, 0)]
-        self.ui.direction = mock_direction([Direction.DOWN, Direction.UP])
-        game = Game(snake=snake, **self.default_params)
-        game.run()
-        assert self.get_drawn_snakes() == [
-            [(0, 1), (0, 0)],
-            [(0, 2), (0, 1)],
-            [(0, 3), (0, 2)]
-        ]
-
-
-class TestLoopOver(BaseTestCase):
-    def setup_method(self):
-        self.ui = Mock()
-        self.ui.direction = Mock(return_value=None)
-        self.egg_creator = Mock()
-        # no snake will eat this egg
-        self.egg_creator.create.return_value = [3, 3]
-        self.default_params = {"iterations": 2, "size": 4,
-                               "ui": self.ui, "egg_creator": self.egg_creator}
-
-    def test_right(self):
-        snake = [(3, 0), (2, 0)]
-        self.ui.direction = mock_direction(Direction.RIGHT)
-        game = Game(snake=snake, **self.default_params)
-        game.run()
-        assert [(0, 0), (3, 0)] in self.get_drawn_snakes()
-
-    def test_left(self):
-        snake = [(0, 0), (1, 0)]
-        self.ui.direction = mock_direction(Direction.LEFT)
-        game = Game(snake=snake, **self.default_params)
-        game.run()
-        assert [(3, 0), (0, 0)] in self.get_drawn_snakes()
-
-    def test_up(self):
-        snake = [(0, 0), (0, 1)]
-        self.ui.direction = mock_direction(Direction.UP)
-        game = Game(snake=snake, **self.default_params)
-        game.run()
-        assert [(0, 3), (0, 0)] in self.get_drawn_snakes()
-
-    def test_down(self):
-        snake = [(0, 3), (0, 2)]
-        self.ui.direction = mock_direction(Direction.DOWN)
-        game = Game(snake=snake, **self.default_params)
-        game.run()
-        assert [(0, 0), (0, 3)] in self.get_drawn_snakes()
 
 
 class TestRandomEggCreator():
