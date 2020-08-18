@@ -8,6 +8,7 @@ pytest = "*"
 pylint = "*"
 autopep8 = "*"
 mypy = "*"
+coverage = "*"
 
 [packages]
 pygame = "==2.0.0.dev10"
