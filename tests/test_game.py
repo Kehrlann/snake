@@ -1,6 +1,7 @@
 import pytest
 import signal
-from snake.game import Game, Direction, RandomEggCreator
+from snake.game import Game, RandomEggCreator
+from snake.direction import Direction
 from unittest.mock import Mock, call, DEFAULT
 
 

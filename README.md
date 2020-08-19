@@ -18,8 +18,8 @@ Snake game &amp; TDD
 
 **Possible TODOs:**
 
-- [ ] Extract Snake class
+- [x] Extract Snake class
 - [ ] Try swapping in a TermUI interface
 - [ ] Apply "nullable infrastructure" patterns and test without mocks (not sure it makes a lot of sense here, we'll see)
 - [ ] Refactor: make the game not square
-- [ ] retry my hand at typings
+- [x] retry my hand at typings

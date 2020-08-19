@@ -1,2 +1,2 @@
 from .game import Game
-from .ui import Ui
+from .ui.pygame import PygameUi
