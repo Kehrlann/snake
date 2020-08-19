@@ -19,7 +19,30 @@ Snake game &amp; TDD
 **Possible TODOs:**
 
 - [x] Extract Snake class
+- [x] Retry my hand at typings
 - [ ] Try swapping in a TermUI interface
 - [ ] Apply "nullable infrastructure" patterns and test without mocks (not sure it makes a lot of sense here, we'll see)
 - [ ] Refactor: make the game not square
-- [x] retry my hand at typings
+
+## V2, thoughts
+
+- Python typings are okay-ish
+  - Not great integration in VSCode, I expected more warnings
+  - Requires a lot of extra splitting in where you define types vs where you use them (there are cyclic dependency issues)
+  - Doesn't play nice with properties when you want a T property that you could update with Optional[T] (None = no update, T = update) ; had to revert to a method (`snake.update_direction()`)
+  - Structural & nominal typing mix-and-match is weird, I probably have to get to the bottom of it
+- Extracted Snake class is much nicer, handles everything about the snake: how it updates its direction, how it grows, what movement is allowed or not
+  - There is a dependency on the Board to know how to loop over. I'm not sure I like it, but this is required to know what is a valid movement and what's not valid
+- In the Game class, I don't like the two-instruction update of the snake + egg ; there is temporal coupling here
+
+  ```python
+  egg_eaten = self._snake.will_eat_egg(self._egg)
+  self._snake.move(egg_eaten)
+  ```
+
+  **Possible TODOs:**
+
+- [ ] Fix the typings in the tests
+- [ ] Try swapping in a TermUI interface
+- [ ] Apply "nullable infrastructure" patterns and test without mocks (not sure it makes a lot of sense here, we'll see)
+- [ ] Refactor: make the game not square
