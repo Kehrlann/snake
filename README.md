@@ -43,6 +43,6 @@ Snake game &amp; TDD
   **Possible TODOs:**
 
 - [ ] Fix the typings in the tests
-- [ ] Try swapping in a TermUI interface
 - [ ] Apply "nullable infrastructure" patterns and test without mocks (not sure it makes a lot of sense here, we'll see)
+- [ ] Try swapping in a TermUI interface -> probably not compatible with Nullable infrastructure, as it would be a _different_ UI. Would that one need to be nullable as well ?
 - [ ] Refactor: make the game not square
