@@ -226,7 +226,7 @@ def mock_direction(directions=None):
 
 
 class Timeout:
-    def __init__(self, seconds=1, error_message='Timeout'):
+    def __init__(self, seconds=.1, error_message='Timeout'):
         self.seconds = seconds
         self.error_message = error_message
 
@@ -235,7 +235,7 @@ class Timeout:
 
     def __enter__(self):
         signal.signal(signal.SIGALRM, self.handle_timeout)
-        signal.alarm(self.seconds)
+        signal.setitimer(signal.ITIMER_REAL, self.seconds)
 
     def __exit__(self, type, value, traceback):
         signal.alarm(0)
