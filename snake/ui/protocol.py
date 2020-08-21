@@ -11,5 +11,5 @@ class UiProtocol(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    def direction(self) -> Optional[Direction]:  # pragma: no cover
+    def direction(self) -> Direction:  # pragma: no cover
         raise NotImplementedError

@@ -10,6 +10,7 @@ class Direction(Enum):
     DOWN = 2
     LEFT = 3
     RIGHT = 4
+    DEFAULT = 5
 
     @property
     def x(self) -> int:

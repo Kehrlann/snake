@@ -64,8 +64,9 @@ class Snake:
     def direction(self) -> Direction:
         return self._direction
 
-    def update_direction(self, direction: Optional[Direction]) -> None:
-        if (direction is not None
+    @direction.setter
+    def direction(self, direction: Direction) -> None:
+        if (direction is not None and direction is not Direction.DEFAULT
                 and not (direction == Direction.UP and self._direction == Direction.DOWN)
                 and not (direction == Direction.DOWN and self._direction == Direction.UP)
                 and not (direction == Direction.RIGHT and self._direction == Direction.LEFT)
@@ -135,7 +136,7 @@ class Game:
             )
 
             try:
-                self._snake.update_direction(self._ui.direction())
+                self._snake.direction = self._ui.direction()
                 egg_eaten = self._snake.will_eat_egg(self._egg)
                 self._snake.move(egg_eaten)
                 if self._snake.fills_board():

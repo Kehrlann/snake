@@ -31,7 +31,7 @@ class PygameUi(UiProtocol):
         pygame.draw.rect(self.screen, color, pygame.Rect(
             x, y, CELL_SIZE, CELL_SIZE))
 
-    def direction(self) -> Optional[Direction]:
+    def direction(self) -> Direction:
         for event in pygame.event.get():
             if event.type == constants.KEYDOWN:
                 if event.key == constants.K_q:
@@ -46,7 +46,7 @@ class PygameUi(UiProtocol):
                     return Direction.LEFT
                 elif event.key == constants.K_RIGHT:
                     return Direction.RIGHT
-        return None
+        return Direction.DEFAULT
 
     def draw(self, snake: Iterable[Position], egg: Position) -> None:
         self.screen.fill(BLACK)

@@ -73,7 +73,7 @@ class TestSnake():
     def test_bite_itself(self):
         snake = Snake(self.board, positions=[
                       (0, 1), (0, 0), (1, 0), (1, 1), (1, 2)])
-        snake.update_direction(Direction.RIGHT)
+        snake.direction = Direction.RIGHT
         with pytest.raises(Snake.BitesItselfError):
             snake.move()
 
@@ -124,30 +124,36 @@ class TestChangeDirection():
 
     def test_left(self):
         snake = Snake(self.board, positions=[(0, 0), (1, 0)])
-        snake.update_direction(Direction.RIGHT)
+        snake.direction = Direction.RIGHT
         snake.move()
         assert snake.positions == [(3, 0), (0, 0)]
 
     def test_right(self):
         snake = Snake(self.board, positions=[(3, 0), (2, 0)])
-        snake.update_direction(Direction.LEFT)
+        snake.direction = Direction.LEFT
         snake.move()
         assert snake.positions == [(0, 0), (3, 0)]
 
     def test_up(self):
         snake = Snake(self.board, positions=[(0, 0), (0, 1)])
-        snake.update_direction(Direction.DOWN)
+        snake.direction = Direction.DOWN
         snake.move()
         assert snake.positions == [(0, 5), (0, 0)]
 
     def test_down(self):
         snake = Snake(self.board, positions=[(0, 0), (0, 1)])
-        snake.update_direction(Direction.UP)
+        snake.direction = Direction.UP
         snake.move()
         assert snake.positions == [(0, 5), (0, 0)]
 
-    def test_no_change(self):
+    def test_none_no_change(self):
         snake = Snake(self.board, positions=[(0, 0), (1, 0)])
-        snake.update_direction(None)
+        snake.direction = None
+        snake.move()
+        assert snake.positions == [(3, 0), (0, 0)]
+
+    def test_default_no_change(self):
+        snake = Snake(self.board, positions=[(0, 0), (1, 0)])
+        snake.direction = Direction.DEFAULT
         snake.move()
         assert snake.positions == [(3, 0), (0, 0)]
