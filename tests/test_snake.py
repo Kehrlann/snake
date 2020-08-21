@@ -7,16 +7,16 @@ class TestSnake():
 
     board = Board(4, 4)
 
-    def test_create_default_positions(self):
+    def test_create_default_positions(self) -> None:
         snake = Snake(self.board)
         assert snake.positions == [(1, 0), (0, 0)]
         assert snake.direction == Direction.RIGHT
 
-    def test_create_given_positions(self):
+    def test_create_given_positions(self) -> None:
         snake = Snake(self.board, positions=[(0, 0), (1, 0)])
         assert snake.positions == [(0, 0), (1, 0)]
 
-    def test_create_must_have_two_or_more_positions(self):
+    def test_create_must_have_two_or_more_positions(self) -> None:
         with pytest.raises(Exception) as e:
             snake = Snake(self.board, positions=[])
         assert str(e.value) == "snake should have a length of at least 2"
@@ -25,7 +25,7 @@ class TestSnake():
             snake = Snake(self.board, positions=[(0, 0)])
         assert str(e.value) == "snake should have a length of at least 2"
 
-    def test_compute_direction(self):
+    def test_compute_direction(self) -> None:
         # TODO: test through the public API ; direction should not be part of the public api
         assert Snake(self.board, positions=[(1, 0), (0, 0)]).direction \
             == Direction.RIGHT
@@ -45,39 +45,39 @@ class TestSnake():
         assert Snake(self.board, positions=[(0, 0), (0, 3)]).direction \
             == Direction.DOWN
 
-    def test_move_right(self):
+    def test_move_right(self) -> None:
         snake = Snake(self.board, positions=[(1, 0), (0, 0)])
         snake.move(False)
         assert snake.positions == [(2, 0), (1, 0)]
 
-    def test_move_left(self):
+    def test_move_left(self) -> None:
         snake = Snake(self.board, positions=[(1, 0), (2, 0)])
         snake.move()
         assert snake.positions == [(0, 0), (1, 0)]
 
-    def test_move_up(self):
+    def test_move_up(self) -> None:
         snake = Snake(self.board, positions=[(0, 1), (0, 2)])
         snake.move()
         assert snake.positions == [(0, 0), (0, 1)]
 
-    def test_move_down(self):
+    def test_move_down(self) -> None:
         snake = Snake(self.board, positions=[(0, 1), (0, 0)])
         snake.move()
         assert snake.positions == [(0, 2), (0, 1)]
 
-    def test_move_keep_tail(self):
+    def test_move_keep_tail(self) -> None:
         snake = Snake(self.board, positions=[(1, 0), (0, 0)])
         snake.move(True)
         assert snake.positions == [(2, 0), (1, 0), (0, 0)]
 
-    def test_bite_itself(self):
+    def test_bite_itself(self) -> None:
         snake = Snake(self.board, positions=[
                       (0, 1), (0, 0), (1, 0), (1, 1), (1, 2)])
         snake.direction = Direction.RIGHT
         with pytest.raises(Snake.BitesItselfError):
             snake.move()
 
-    def test_fills_board(self):
+    def test_fills_board(self) -> None:
         board = Board(2, 3)
         small_snake = Snake(board, positions=[(0, 0), (1, 0)])
         big_snake = Snake(board, positions=[
@@ -85,12 +85,12 @@ class TestSnake():
         assert small_snake.fills_board() is False
         assert big_snake.fills_board() is True
 
-    def test_will_eat_egg(self):
+    def test_will_eat_egg(self) -> None:
         snake = Snake(self.board, positions=[(1, 0), (0, 0)])
         assert snake.will_eat_egg((2, 0)) is True
         assert snake.will_eat_egg((1, 1)) is False
 
-    def test_iter(self):
+    def test_iter(self) -> None:
         snake = Snake(self.board, positions=[(0, 1), (0, 0)])
         assert [pos for pos in snake] == [(0, 1), (0, 0)]
 
@@ -98,22 +98,22 @@ class TestSnake():
 class TestLoopOver():
     board = Board(width=4, height=6)
 
-    def test_left(self):
+    def test_left(self) -> None:
         snake = Snake(self.board, positions=[(0, 0), (1, 0)])
         snake.move()
         assert snake.positions == [(3, 0), (0, 0)]
 
-    def test_right(self):
+    def test_right(self) -> None:
         snake = Snake(self.board, positions=[(3, 0), (2, 0)])
         snake.move()
         assert snake.positions == [(0, 0), (3, 0)]
 
-    def test_up(self):
+    def test_up(self) -> None:
         snake = Snake(self.board, positions=[(0, 0), (0, 1)])
         snake.move()
         assert snake.positions == [(0, 5), (0, 0)]
 
-    def test_down(self):
+    def test_down(self) -> None:
         snake = Snake(self.board, positions=[(0, 0), (0, 1)])
         snake.move()
         assert snake.positions == [(0, 5), (0, 0)]
@@ -122,37 +122,37 @@ class TestLoopOver():
 class TestChangeDirection():
     board = Board(width=4, height=6)
 
-    def test_left(self):
+    def test_left(self) -> None:
         snake = Snake(self.board, positions=[(0, 0), (1, 0)])
         snake.direction = Direction.RIGHT
         snake.move()
         assert snake.positions == [(3, 0), (0, 0)]
 
-    def test_right(self):
+    def test_right(self) -> None:
         snake = Snake(self.board, positions=[(3, 0), (2, 0)])
         snake.direction = Direction.LEFT
         snake.move()
         assert snake.positions == [(0, 0), (3, 0)]
 
-    def test_up(self):
+    def test_up(self) -> None:
         snake = Snake(self.board, positions=[(0, 0), (0, 1)])
         snake.direction = Direction.DOWN
         snake.move()
         assert snake.positions == [(0, 5), (0, 0)]
 
-    def test_down(self):
+    def test_down(self) -> None:
         snake = Snake(self.board, positions=[(0, 0), (0, 1)])
         snake.direction = Direction.UP
         snake.move()
         assert snake.positions == [(0, 5), (0, 0)]
 
-    def test_none_no_change(self):
+    def test_none_no_change(self) -> None:
         snake = Snake(self.board, positions=[(0, 0), (1, 0)])
-        snake.direction = None
+        snake.direction = None  # type: ignore
         snake.move()
         assert snake.positions == [(3, 0), (0, 0)]
 
-    def test_default_no_change(self):
+    def test_default_no_change(self) -> None:
         snake = Snake(self.board, positions=[(0, 0), (1, 0)])
         snake.direction = Direction.DEFAULT
         snake.move()
