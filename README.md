@@ -29,7 +29,7 @@ Snake game &amp; TDD
 - Python typings are okay-ish
   - Not great integration in VSCode, I expected more warnings
   - Requires a lot of extra splitting in where you define types vs where you use them (there are cyclic dependency issues)
-  - Doesn't play nice with properties when you want a T property that you could update with Optional[T] (None = no update, T = update) ; had to revert to a method (`snake.update_direction()`)
+  - Doesn't play nice with properties when you want a T property that you could update with Optional[T] (None = no update, T = update) ; had to revert to a method (`snake.update_direction()`). Another trick was to introduce a new "DEFAULT" enum value.
   - Structural & nominal typing mix-and-match is weird, I probably have to get to the bottom of it
 - Extracted Snake class is much nicer, handles everything about the snake: how it updates its direction, how it grows, what movement is allowed or not
   - There is a dependency on the Board to know how to loop over. I'm not sure I like it, but this is required to know what is a valid movement and what's not valid
@@ -40,7 +40,11 @@ Snake game &amp; TDD
   self._snake.move(egg_eaten)
   ```
 
-  **Possible TODOs:**
+- I tried mutation testing with `cosmic-ray`, but it didn't work really well. Then I tried `mutmut`, it's much easier to run.
+  - The results are interesting but there is a lot of what I would consider false positives, e.g. changing the values of enums.
+  - Not sure it would help students check whether their tests are good or bad.
+
+**Possible TODOs:**
 
 - [ ] Fix the typings in the tests
 - [ ] Apply "nullable infrastructure" patterns and test without mocks (not sure it makes a lot of sense here, we'll see)
