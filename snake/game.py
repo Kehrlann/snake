@@ -163,6 +163,3 @@ class Game:
             if not new_egg in self._snake:
                 self._egg = new_egg
                 break
-
-    class GameOverError(Exception):
-        pass
